@@ -42,8 +42,8 @@ export const userRegister = async (req, res) => {
 
     res.cookie("token", token, {
       httpOnly: true,
-      secure: false,
-      sameSite: "Lax",
+      secure: true,
+      sameSite: "none",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
@@ -97,16 +97,28 @@ export const userLogin = async (req, res) => {
 
     res.status(200).json({
       message: "User Logged In successfully",
-      user:{
-         id: user._id,
-         email: user.email
-      }
-    })
+      user: {
+        id: user._id,
+        email: user.email,
+      },
+    });
   } catch (error) {
-     return res.status(500).json({
-        message: "Internal server error",
-     })
+    return res.status(500).json({
+      message: "Internal server error",
+    });
   }
+};
+
+export const userLogout = async (req, res) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "None",
+  });
+
+  return res.status(200).json({
+     message: "user Logged out successfully"
+  })
 };
 
 export const getCurrentUser = (req, res) => {
@@ -117,8 +129,4 @@ export const getCurrentUser = (req, res) => {
       createdAt: req.user.createdAt,
     },
   });
-}
-
-
-
-
+};
