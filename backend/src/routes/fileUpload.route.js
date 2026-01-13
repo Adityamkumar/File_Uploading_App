@@ -8,7 +8,7 @@ const router = express.Router();
 
 const upload = multer({
     storage: multer.memoryStorage(),
-    limits: {fileSize: 10 * 1024 * 1024 },
+    limits: {fileSize: 40 * 1024 * 1024 },
     fileFilter: fileFilter
 })
 
