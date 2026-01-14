@@ -3,14 +3,26 @@ import multer from 'multer'
 import { authMiddleware } from '../middlewares/auth.middleware.js';
 import { deleteFiles, fileUpload, getFiles } from '../controllers/uploadFiles.controller.js';
 import { fileFilter } from '../middlewares/fileValidation.middleware.js';
+import path from "path";
+import { v4 as uuidv4 } from "uuid";
 const router = express.Router();
 
 
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/");
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    cb(null, `${uuidv4()}${ext}`);
+  },
+});
+
 const upload = multer({
-    storage: multer.memoryStorage(),
-    limits: {fileSize: 40 * 1024 * 1024 },
-    fileFilter: fileFilter
-})
+  storage,
+  limits: { fileSize: 40 * 1024 * 1024 },
+  fileFilter,
+});
 
 router.post('/files/upload',authMiddleware, upload.single('file') , fileUpload)
 router.get('/files', authMiddleware, getFiles)

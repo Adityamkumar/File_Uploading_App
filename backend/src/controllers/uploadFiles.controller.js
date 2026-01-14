@@ -3,6 +3,7 @@ import path from "path";
 import { uploadFile } from "../services/storage.service.js";
 import fileModel from "../models/file.model.js";
 import { imagekit } from "../services/storage.service.js";
+import fs from 'fs'
 
 export const fileUpload = async (req, res) => {
   const file = req.file;
@@ -16,7 +17,11 @@ export const fileUpload = async (req, res) => {
     const ext = path.extname(file.originalname);
     const uniqueFileName = `${uuidv4()}${ext}`;
 
-    const uploadedFile = await uploadFile(file.buffer, uniqueFileName);
+    const uploadedFile = await uploadFile(file.path, uniqueFileName);
+
+   if(file?.path){
+      fs.unlinkSync(file.path)
+   }
 
     const savedFile = await fileModel.create({
       user: req.user._id,
@@ -31,17 +36,19 @@ export const fileUpload = async (req, res) => {
       message: "File uploaded successfully",
       file: savedFile,
     });
+
+  
   } catch (error) {
     return res.status(500).json({
       message: "file upload failed",
       error: error.message,
     });
+    
   }
 };
 
 export const getFiles = async (req, res) => {
   const userId = req.user._id;
-  console.log("User Id:", userId);
 
   try {
     const file = await fileModel.find({ user: userId }).sort({ createdAt: -1 }); //latest files first

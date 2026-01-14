@@ -1,3 +1,5 @@
+import { formatFileSize } from "../utils/utils";
+
 export default function FileUploadBox({
   onFileChange,
   onUpload,
@@ -28,7 +30,7 @@ export default function FileUploadBox({
 
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+            className="cursor-pointer text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
           >
             ✕
           </button>
@@ -49,7 +51,7 @@ export default function FileUploadBox({
             </p>
 
             <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              JPEG, PNG, PDF up to 10MB
+              JPEG, PNG, PDF up to 40MB
             </p>
 
             <span
@@ -71,7 +73,7 @@ export default function FileUploadBox({
 
           {selectedFile && (
             <p className="mt-3 text-sm text-gray-700 dark:text-gray-300 truncate">
-              Selected: {selectedFile.name}
+              Selected: {selectedFile.name} {formatFileSize(selectedFile.size)}
             </p>
           )}
 

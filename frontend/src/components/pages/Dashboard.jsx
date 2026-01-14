@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import FileUploadBox from "../FileUploadBox";
 import { Eye, Trash2 } from "lucide-react";
+import { formatFileSize } from "../../utils/utils";
 
 export default function Dashboard() {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -210,7 +211,7 @@ export default function Dashboard() {
                       {file.originalName}
                     </p>
                     <p className="text-xs text-gray-500 dark:text-gray-400">
-                      {(file.size / 1024).toFixed(1)} KB
+                      {formatFileSize(file.size)}
                     </p>
                   </div>
 
