@@ -189,8 +189,8 @@ export default function Dashboard() {
     <div className="min-h-screen bg-gray-50 dark:bg-zinc-900">
       {/* Navbar */}
       <header className="flex items-center justify-between px-6 py-4 border-b bg-white dark:bg-zinc-950">
-        <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
-          File Dashboard
+        <h1 className="flex items-center text-xl font-semibold text-gray-900 dark:text-gray-100">
+          Droply <img className="w-8"  src="/cloud.png" alt="logo" />
         </h1>
 
         {/* Profile */}
