@@ -1,20 +1,26 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import FileUploadBox from "../FileUploadBox";
-import { Eye, Trash2 } from "lucide-react";
+import { ArrowDownToLine, Trash2 } from "lucide-react";
 import { formatFileSize } from "../../utils/utils";
+import DeleteConfirmModel from "../DeleteConfirmModel";
 
 export default function Dashboard() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [files, setFiles] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-
   const [showProfile, setShowProfile] = useState(false);
   const [userEmail, setUserEmail] = useState("");
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [fileToDelete, setFileToDelete] = useState(null);
+
+  const fileInputRef = useRef(null);
+  const abortControllerRef = useRef(null);
 
   const navigate = useNavigate();
 
@@ -53,6 +59,16 @@ export default function Dashboard() {
     setSelectedFile(e.target.files[0]);
   };
 
+  const resetUploadState = () => {
+    setSelectedFile(null);
+    setUploadProgress(0);
+    setErrorMessage("");
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
   // ⬆️ Upload file
   const handleUpload = async () => {
     if (!selectedFile) {
@@ -63,6 +79,8 @@ export default function Dashboard() {
     const formData = new FormData();
     formData.append("file", selectedFile);
 
+    abortControllerRef.current = new AbortController();
+
     try {
       setUploading(true);
       setErrorMessage("");
@@ -70,9 +88,7 @@ export default function Dashboard() {
 
       await axios.post("http://localhost:3000/api/files/upload", formData, {
         withCredentials: true,
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+        signal: abortControllerRef.current.signal,
         onUploadProgress: (progressEvent) => {
           if (!progressEvent.total) return;
 
@@ -80,21 +96,26 @@ export default function Dashboard() {
             (progressEvent.loaded * 100) / progressEvent.total
           );
 
-          setUploadProgress(Math.min(percent, 99));
+          setUploadProgress(percent);
         },
       });
       setUploadProgress(100);
       setTimeout(() => {
+        resetUploadState();
         setShowUploadModal(false);
-        setUploadProgress(0);
         fetchFiles();
       }, 400);
       setSelectedFile(null);
     } catch (error) {
+      if (error.name === "CanceledError") {
+        console.log("Upload cancelled");
+        return;
+      }
       const message = error.response?.data?.message || "File upload failed";
       setErrorMessage(message);
     } finally {
       setUploading(false);
+      abortControllerRef.current = null;
     }
   };
 
@@ -117,14 +138,53 @@ export default function Dashboard() {
   // ❌ Delete file
   const handleDelete = async (id) => {
     try {
+      setDeleting(true)
+
       await axios.delete(`http://localhost:3000/api/files/${id}`, {
         withCredentials: true,
       });
+      setShowDeleteModal(false);
+      setFileToDelete(null);
       fetchFiles();
     } catch (error) {
       console.log("Delete failed", error);
     }
+    finally {
+      setDeleting(false)
+    }
   };
+
+  const getFileIcon = (mimeType) => {
+    if (!mimeType) return "📁";
+    if (mimeType === "application/pdf") {
+      return <img className="w-6" src="/pdf.png" alt="PDF" />;
+    }
+
+    if (mimeType.startsWith("image/")) {
+      return <img className="w-6" src="/img.png" alt="Image" />;
+    }
+
+    return null;
+  };
+
+  const handleCancel = () => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      abortControllerRef.current = null;
+    }
+
+    resetUploadState();
+    setUploading(false);
+    setShowUploadModal(false);
+  };
+
+  const handleCancelDelete = () => {
+    if (deleting) return;
+
+    setShowDeleteModal(false);
+    setFileToDelete(null);
+  };
+
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-zinc-900">
@@ -172,8 +232,9 @@ export default function Dashboard() {
             errorMessage={errorMessage}
             onFileChange={handleFileChange}
             uploadProgress={uploadProgress}
-            onFileSelect={setSelectedFile}
+            handleCancel={handleCancel}
             onUpload={handleUpload}
+            fileInputRef={fileInputRef}
             onClose={() => setShowUploadModal(false)}
           />
         )}
@@ -206,7 +267,9 @@ export default function Dashboard() {
                   className="flex items-center justify-between px-4 py-3
             border-t border-gray-200 dark:border-zinc-800"
                 >
-                  <div>
+                  <div className="md:flex  gap-2 items-center">
+                    <span className="text-sm">{getFileIcon(file.type)}</span>
+
                     <p className="font-medium text-gray-900 dark:text-gray-100">
                       {file.originalName}
                     </p>
@@ -214,21 +277,20 @@ export default function Dashboard() {
                       {formatFileSize(file.size)}
                     </p>
                   </div>
-
                   <div className="flex gap-4">
                     <a
-                      title="view"
-                      href={file.fileUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-sm text-blue-600 hover:underline"
+                      title="Download"
+                      href={`${file.fileUrl}?ik-attachment=true`}
                     >
-                      <Eye />
+                      <ArrowDownToLine color="green" size={28} />
                     </a>
 
                     <button
                       title="delete"
-                      onClick={() => handleDelete(file._id)}
+                      onClick={() =>{
+                         setFileToDelete(file._id)
+                         setShowDeleteModal(true)
+                      }}
                       className="text-sm cursor-pointer text-red-600"
                     >
                       <Trash2 />
@@ -238,6 +300,13 @@ export default function Dashboard() {
               ))
             )}
           </div>
+          <DeleteConfirmModel
+            showDeleteModal={showDeleteModal}
+            fileToDelete={fileToDelete}
+            deleting={deleting}
+            handleCancelDelete={handleCancelDelete}
+            handleDelete={handleDelete}
+          />
         </section>
       </main>
     </div>

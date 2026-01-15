@@ -3,7 +3,7 @@ import path from "path";
 import { uploadFile } from "../services/storage.service.js";
 import fileModel from "../models/file.model.js";
 import { imagekit } from "../services/storage.service.js";
-import fs from 'fs'
+import fs from "fs";
 
 export const fileUpload = async (req, res) => {
   const file = req.file;
@@ -17,11 +17,15 @@ export const fileUpload = async (req, res) => {
     const ext = path.extname(file.originalname);
     const uniqueFileName = `${uuidv4()}${ext}`;
 
-    const uploadedFile = await uploadFile(file.path, uniqueFileName);
+    const uploadedFile = await uploadFile(
+      fs.createReadStream(file.path),
+      uniqueFileName
+    );
 
-   if(file?.path){
-      fs.unlinkSync(file.path)
-   }
+
+    if (file?.path) {
+      fs.unlinkSync(file.path);
+    }
 
     const savedFile = await fileModel.create({
       user: req.user._id,
@@ -36,14 +40,11 @@ export const fileUpload = async (req, res) => {
       message: "File uploaded successfully",
       file: savedFile,
     });
-
-  
   } catch (error) {
     return res.status(500).json({
       message: "file upload failed",
       error: error.message,
     });
-    
   }
 };
 
@@ -81,16 +82,16 @@ export const deleteFiles = async (req, res) => {
       return res.status(403).json({ message: "Unauthorized action" });
     }
 
-    await imagekit.deleteFile(file.fileId)
-    await fileModel.deleteOne({_id: file._id})
+    await imagekit.deleteFile(file.fileId);
+    await fileModel.deleteOne({ _id: file._id });
 
     return res.status(200).json({
-        message: "File deleted successfully"
-    })
+      message: "File deleted successfully",
+    });
   } catch (error) {
-    console.log("Error", error)
-      return res.status(500).json({
-        message: "Failed to delete file"
-      })
+    console.log("Error", error);
+    return res.status(500).json({
+      message: "Failed to delete file",
+    });
   }
 };

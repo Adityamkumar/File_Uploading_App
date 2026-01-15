@@ -7,8 +7,13 @@ export default function FileUploadBox({
   errorMessage,
   selectedFile,
   onClose,
+  handleCancel,
   uploadProgress = { uploadProgress },
-}) {
+}) 
+{
+
+  
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
       <div className="w-full max-w-lg rounded-xl bg-white dark:bg-zinc-950 shadow-lg">
@@ -51,7 +56,7 @@ export default function FileUploadBox({
             </p>
 
             <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              JPEG, PNG, PDF up to 40MB
+              JPEG, PNG, PDF up to 10MB
             </p>
 
             <span
@@ -62,13 +67,16 @@ export default function FileUploadBox({
             >
               Browse File
             </span>
-
-            <input
+            {
+              !uploading&&(
+                <input
               id="fileInput"
               type="file"
               className="hidden"
               onChange={onFileChange}
             />
+              )
+            }
           </label>
 
           {selectedFile && (
@@ -98,8 +106,9 @@ export default function FileUploadBox({
         {/* Footer */}
         <div className="flex justify-end gap-3 px-6 py-4 border-t border-gray-200 dark:border-zinc-800">
           <button
-            onClick={onClose}
+            onClick={handleCancel}
             className="rounded-md cursor-pointer px-4 py-2 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-zinc-800"
+
           >
             Cancel
           </button>

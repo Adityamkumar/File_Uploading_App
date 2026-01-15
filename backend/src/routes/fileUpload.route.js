@@ -20,11 +20,13 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage,
-  limits: { fileSize: 40 * 1024 * 1024 },
+  limits: { fileSize: 10 * 1024 * 1024 },
   fileFilter,
 });
 
-router.post('/files/upload',authMiddleware, upload.single('file') , fileUpload)
+
+
+router.post('/files/upload', upload.single('file'),authMiddleware, fileUpload)
 router.get('/files', authMiddleware, getFiles)
 router.delete('/files/:id', authMiddleware, deleteFiles)
 
