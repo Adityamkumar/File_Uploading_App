@@ -9,7 +9,7 @@ const DeleteConfirmModel = ({
 }) => {
   return (
     showDeleteModal && (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+      <div className="fixed px-4 inset-0 z-50 flex items-center justify-center bg-black/50">
         <div className="w-full max-w-sm rounded-lg bg-white dark:bg-zinc-900 p-6">
           <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
             Delete file?

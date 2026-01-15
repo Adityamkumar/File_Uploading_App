@@ -5,6 +5,7 @@ import FileUploadBox from "../FileUploadBox";
 import { ArrowDownToLine, Trash2 } from "lucide-react";
 import { formatFileSize } from "../../utils/utils";
 import DeleteConfirmModel from "../DeleteConfirmModel";
+import { formatTimeAgo } from "../../utils/time.js";
 
 export default function Dashboard() {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -138,7 +139,7 @@ export default function Dashboard() {
   // ❌ Delete file
   const handleDelete = async (id) => {
     try {
-      setDeleting(true)
+      setDeleting(true);
 
       await axios.delete(`http://localhost:3000/api/files/${id}`, {
         withCredentials: true,
@@ -148,9 +149,8 @@ export default function Dashboard() {
       fetchFiles();
     } catch (error) {
       console.log("Delete failed", error);
-    }
-    finally {
-      setDeleting(false)
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -184,7 +184,6 @@ export default function Dashboard() {
     setShowDeleteModal(false);
     setFileToDelete(null);
   };
-
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-zinc-900">
@@ -276,6 +275,9 @@ export default function Dashboard() {
                     <p className="text-xs text-gray-500 dark:text-gray-400">
                       {formatFileSize(file.size)}
                     </p>
+                     <span className="text-xs text-gray-500">
+                    {formatTimeAgo(file.createdAt)}
+                  </span>
                   </div>
                   <div className="flex gap-4">
                     <a
@@ -287,9 +289,9 @@ export default function Dashboard() {
 
                     <button
                       title="delete"
-                      onClick={() =>{
-                         setFileToDelete(file._id)
-                         setShowDeleteModal(true)
+                      onClick={() => {
+                        setFileToDelete(file._id);
+                        setShowDeleteModal(true);
                       }}
                       className="text-sm cursor-pointer text-red-600"
                     >
