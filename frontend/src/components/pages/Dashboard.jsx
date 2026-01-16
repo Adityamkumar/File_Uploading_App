@@ -49,7 +49,7 @@ export default function Dashboard() {
       await axios.get("http://localhost:3000/api/auth/user/logout", {
         withCredentials: true,
       });
-      navigate("/login");
+      navigate("/");
     } catch (error) {
       console.log(error);
     }
@@ -189,9 +189,10 @@ export default function Dashboard() {
     <div className="min-h-screen bg-gray-50 dark:bg-zinc-900">
       {/* Navbar */}
       <header className="flex items-center justify-between px-6 py-4 border-b bg-white dark:bg-zinc-950">
-        <h1 className="flex items-center text-xl font-semibold text-gray-900 dark:text-gray-100">
-          Droply <img className="w-8"  src="/cloud.png" alt="logo" />
-        </h1>
+        <div className="flex gap-1">
+          <h1 className="text-lg text-white font-semibold">Droply</h1>
+          <div className="h-8 w-8 "><img className="w-8 object-cover" src="/cloud.png" alt="logo" /></div>
+        </div>
 
         {/* Profile */}
         <div className="relative">
