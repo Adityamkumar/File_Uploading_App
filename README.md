@@ -2,7 +2,7 @@
 
 Droply is a modern, secure, and efficient file-sharing application designed to make storing and sharing files seamless. Built with a robust technology stack, it offers a user-friendly interface for managing your files with ease.
 
-![Droply Demo Image](public/demo.png)
+![Droply Demo Image](/frontend/public/demo.png)
 *(Result of the application)*
 
 ## 🚀 Features
