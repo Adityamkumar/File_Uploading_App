@@ -1,7 +1,7 @@
 import express from 'express'
 import multer from 'multer'
 import { authMiddleware } from '../middlewares/auth.middleware.js';
-import { deleteFiles, fileUpload, getFiles } from '../controllers/uploadFiles.controller.js';
+import { deleteFiles, fileUpload, getFiles} from '../controllers/uploadFiles.controller.js';
 import { fileFilter } from '../middlewares/fileValidation.middleware.js';
 import path from "path";
 import { v4 as uuidv4 } from "uuid";

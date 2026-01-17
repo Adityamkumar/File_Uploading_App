@@ -23,6 +23,14 @@ const fileSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    isPublic:{
+      type: Boolean,
+      default: false
+    },
+    shareToken:{
+       type: String,
+       default: null
+    }
   },
   {
     timestamps: true,

@@ -2,10 +2,11 @@ import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import FileUploadBox from "../FileUploadBox";
-import { ArrowDownToLine, Trash2 } from "lucide-react";
+import { ArrowDownToLine, Share2, Trash2 } from "lucide-react";
 import { formatFileSize } from "../../utils/utils";
 import DeleteConfirmModel from "../DeleteConfirmModel";
 import { formatTimeAgo } from "../../utils/time.js";
+import  ShareModel  from "../ShareModel.jsx"
 
 export default function Dashboard() {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -19,6 +20,9 @@ export default function Dashboard() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [fileToDelete, setFileToDelete] = useState(null);
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [shareLink, setShareLink] = useState("");
+
 
   const fileInputRef = useRef(null);
   const abortControllerRef = useRef(null);
@@ -185,6 +189,21 @@ export default function Dashboard() {
     setFileToDelete(null);
   };
 
+  const handleShare = async (fileId) => {
+    try {
+      const response = await axios.post(`http://localhost:3000/api/files/${fileId}/share`, {}, {
+        withCredentials: true
+      })
+      setShareLink(response.data.shareUrl)
+      setShowShareModal(true)
+    } catch (error) {
+      console.log("Share failed", error)
+    }
+  }
+
+ 
+
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-zinc-900">
       {/* Navbar */}
@@ -276,11 +295,18 @@ export default function Dashboard() {
                     <p className="text-xs text-gray-500 dark:text-gray-400">
                       {formatFileSize(file.size)}
                     </p>
-                     <span className="text-xs text-gray-500">
-                    {formatTimeAgo(file.createdAt)}
-                  </span>
+                    <span className="text-xs text-gray-500">
+                      {formatTimeAgo(file.createdAt)}
+                    </span>
                   </div>
                   <div className="flex gap-4">
+                    <button
+                      title="Share"
+                      onClick={() => handleShare(file._id)}
+                      className="text-blue-500 hover:text-blue-400 cursor-pointer"
+                    >
+                      <Share2 />
+                    </button>
                     <a
                       title="Download"
                       href={`${file.fileUrl}?ik-attachment=true`}
@@ -310,6 +336,13 @@ export default function Dashboard() {
             handleCancelDelete={handleCancelDelete}
             handleDelete={handleDelete}
           />
+          {showShareModal &&(
+            <ShareModel
+              link={shareLink}
+              onClose={() => setShowShareModal(false)}
+            />
+          )}
+
         </section>
       </main>
     </div>

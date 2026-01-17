@@ -1,9 +1,9 @@
-import { v4 as uuidv4 } from "uuid";
 import path from "path";
 import { uploadFile } from "../services/storage.service.js";
 import fileModel from "../models/file.model.js";
 import { imagekit } from "../services/storage.service.js";
 import fs from "fs";
+import { v4 as uuidv4 } from "uuid";
 
 export const fileUpload = async (req, res) => {
   const file = req.file;
@@ -21,7 +21,6 @@ export const fileUpload = async (req, res) => {
       fs.createReadStream(file.path),
       uniqueFileName
     );
-
 
     if (file?.path) {
       fs.unlinkSync(file.path);
@@ -95,3 +94,5 @@ export const deleteFiles = async (req, res) => {
     });
   }
 };
+
+
