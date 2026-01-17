@@ -35,7 +35,7 @@ export default function Dashboard() {
     const fetchCurrentUser = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:3000/api/auth/user/me",
+          `${API_BASE_URL}/api/auth/user/me`,
           { withCredentials: true }
         );
         setUserEmail(response.data.user.email);
