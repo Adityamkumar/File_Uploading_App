@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from 'axios'
+import { API_BASE_URL } from "../../config/api.js";
 
 export default function Register() {
 
@@ -14,7 +15,7 @@ export default function Register() {
     e.preventDefault()
 
     try {
-         await axios.post('http://localhost:3000/api/auth/user/register',{
+         await axios.post(`${API_BASE_URL}/api/auth/user/register`,{
       email, 
       password
     },{

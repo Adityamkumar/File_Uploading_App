@@ -7,6 +7,7 @@ import { formatFileSize } from "../../utils/utils";
 import DeleteConfirmModel from "../DeleteConfirmModel";
 import { formatTimeAgo } from "../../utils/time.js";
 import  ShareModel  from "../ShareModel.jsx"
+import { API_BASE_URL } from "../../config/api.js";
 
 export default function Dashboard() {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -50,7 +51,7 @@ export default function Dashboard() {
   // 🚪 Logout
   const logoutUser = async () => {
     try {
-      await axios.get("http://localhost:3000/api/auth/user/logout", {
+      await axios.get(`${API_BASE_URL}/api/auth/user/logout`, {
         withCredentials: true,
       });
       navigate("/");
@@ -91,7 +92,7 @@ export default function Dashboard() {
       setErrorMessage("");
       setUploadProgress(0);
 
-      await axios.post("http://localhost:3000/api/files/upload", formData, {
+      await axios.post(`${API_BASE_URL}/api/files/upload`, formData, {
         withCredentials: true,
         signal: abortControllerRef.current.signal,
         onUploadProgress: (progressEvent) => {
@@ -127,7 +128,7 @@ export default function Dashboard() {
   // 📄 Fetch files
   const fetchFiles = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/files", {
+      const response = await axios.get(`${API_BASE_URL}/api/files`, {
         withCredentials: true,
       });
       setFiles(response.data.files);
@@ -145,7 +146,7 @@ export default function Dashboard() {
     try {
       setDeleting(true);
 
-      await axios.delete(`http://localhost:3000/api/files/${id}`, {
+      await axios.delete(`${API_BASE_URL}/api/files/${id}`, {
         withCredentials: true,
       });
       setShowDeleteModal(false);
@@ -191,7 +192,7 @@ export default function Dashboard() {
 
   const handleShare = async (fileId) => {
     try {
-      const response = await axios.post(`http://localhost:3000/api/files/${fileId}/share`, {}, {
+      const response = await axios.post(`${API_BASE_URL}/api/files/${fileId}/share`, {}, {
         withCredentials: true
       })
       setShareLink(response.data.shareUrl)
