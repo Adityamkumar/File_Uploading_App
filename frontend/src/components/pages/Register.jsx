@@ -5,39 +5,42 @@ import { API_BASE_URL } from "../../config/api.js";
 
 export default function Register() {
 
- const [email, setEmail] = useState('')
- const [password, setPassword] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(false)
 
- const navigate = useNavigate()
+  const navigate = useNavigate()
 
- const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
 
     try {
-         await axios.post(`${API_BASE_URL}/api/auth/user/register`,{
-      email, 
-      password
-    },{
-      withCredentials: true
-    })
-    
-    setEmail('')
-    setPassword('')
+      await axios.post(`${API_BASE_URL}/api/auth/user/register`, {
+        email,
+        password
+      }, {
+        withCredentials: true
+      })
 
-    navigate('/dashboard')
+      setEmail('')
+      setPassword('')
+
+      navigate('/dashboard')
 
     } catch (error) {
       const message = error.response?.data?.message || "Something went wrong";
       setErrorMessage(message)
+    }finally{
+       setLoading(false)
     }
-    
- }
+
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-zinc-900 px-4">
       <div className="w-full max-w-md rounded-2xl border border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-8 shadow-sm">
-        
+
         <h2 className="text-3xl font-semibold text-gray-900 dark:text-gray-100">
           Create account
         </h2>
@@ -51,11 +54,11 @@ export default function Register() {
               Email
             </label>
             <input
-             id="email"
+              id="email"
               type="email"
               placeholder="you@example.com"
               value={email}
-              onChange={(e)=> setEmail(e.target.value)}
+              onChange={(e) => setEmail(e.target.value)}
               className="mt-1 w-full rounded-lg border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-4 py-2.5 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
@@ -70,7 +73,7 @@ export default function Register() {
               placeholder="••••••••"
               autoComplete="true"
               value={password}
-              onChange={(e)=> setPassword(e.target.value)}
+              onChange={(e) => setPassword(e.target.value)}
               className="mt-1 w-full rounded-lg border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-4 py-2.5 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
@@ -79,7 +82,7 @@ export default function Register() {
             type="submit"
             className="w-full cursor-pointer rounded-lg bg-blue-600 py-2.5 font-medium text-white hover:bg-blue-700 transition"
           >
-            Register
+            {loading ? "Creating account..." : "Create account"}
           </button>
           {errorMessage && (
             <p className="text-red-500 font-sm text-center">{errorMessage}</p>

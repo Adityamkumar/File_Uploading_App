@@ -7,6 +7,7 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(false)
 
   const navigate = useNavigate();
 
@@ -32,6 +33,8 @@ export default function Login() {
     } catch (error) {
       const message = error.response?.data?.message || "Something went wrong";
       setErrorMessage(message)
+    }finally{
+       setLoading(false)
     }
   };
 
@@ -85,7 +88,7 @@ export default function Login() {
             type="submit"
             className="w-full cursor-pointer rounded-lg bg-blue-600 py-2.5 font-medium text-white hover:bg-blue-700 transition"
           >
-            Login
+            {loading ? "Logging in..." : "Login"}
           </button>
           {errorMessage && (
             <p className="text-red-500 font-sm text-center">{errorMessage}</p>
