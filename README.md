@@ -38,6 +38,11 @@ Droply allows users to securely share files using public, token-based share link
 
 ![File Sharing Demo](./frontend/public/share.png)
 
+## ⚠️ Limitation
+
+Due to cloud storage plan limits, file uploads are currently restricted to **10MB**.
+This can be scaled later by switching to a different storage provider or paid plan.
+
 ## �🛠️ Technologies Used
 
 ### Frontend

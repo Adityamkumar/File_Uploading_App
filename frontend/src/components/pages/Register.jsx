@@ -16,6 +16,7 @@ export default function Register() {
     e.preventDefault()
 
     try {
+      setLoading(true)
       await axios.post(`${API_BASE_URL}/api/auth/user/register`, {
         email,
         password
@@ -54,6 +55,7 @@ export default function Register() {
               Email
             </label>
             <input
+              required
               id="email"
               type="email"
               placeholder="you@example.com"
@@ -68,6 +70,7 @@ export default function Register() {
               Password
             </label>
             <input
+              required
               id="password"
               type="password"
               placeholder="••••••••"
@@ -80,7 +83,7 @@ export default function Register() {
 
           <button
             type="submit"
-            className="w-full cursor-pointer rounded-lg bg-blue-600 py-2.5 font-medium text-white hover:bg-blue-700 transition"
+            className={`w-full cursor-pointer rounded-lg ${loading ? "bg-blue-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700 cursor-pointer"} py-2.5 font-medium text-white transition`}
           >
             {loading ? "Creating account..." : "Create account"}
           </button>

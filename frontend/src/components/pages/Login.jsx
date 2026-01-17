@@ -15,6 +15,7 @@ export default function Login() {
     e.preventDefault();
 
     try {
+      setLoading(true)
       await axios.post(
         `${API_BASE_URL}/api/auth/user/login`,
         {
@@ -33,8 +34,8 @@ export default function Login() {
     } catch (error) {
       const message = error.response?.data?.message || "Something went wrong";
       setErrorMessage(message)
-    }finally{
-       setLoading(false)
+    } finally {
+      setLoading(false)
     }
   };
 
@@ -57,6 +58,7 @@ export default function Login() {
               Email
             </label>
             <input
+              required
               id="email"
               type="email"
               placeholder="you@example.com"
@@ -74,6 +76,7 @@ export default function Login() {
               Password
             </label>
             <input
+              required
               id="password"
               type="password"
               placeholder="••••••••"
@@ -86,7 +89,10 @@ export default function Login() {
 
           <button
             type="submit"
-            className="w-full cursor-pointer rounded-lg bg-blue-600 py-2.5 font-medium text-white hover:bg-blue-700 transition"
+            className={`w-full cursor-pointer rounded-lg ${loading
+              ? "bg-blue-400 cursor-not-allowed"
+              : "bg-blue-600 hover:bg-blue-700 cursor-pointer"
+              } py-2.5 font-medium text-white transition`}
           >
             {loading ? "Logging in..." : "Login"}
           </button>
