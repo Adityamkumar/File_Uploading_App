@@ -3,7 +3,6 @@
 Droply is a modern, secure, and efficient file-sharing application designed to make storing and sharing files seamless. Built with a robust technology stack, it offers a user-friendly interface for managing your files with ease.
 
 ![Droply Demo Image](/frontend/public/demo.png)
-*(Result of the application)*
 
 ## 🚀 Features
 
@@ -17,7 +16,29 @@ Droply is a modern, secure, and efficient file-sharing application designed to m
 - **Dark Mode Support**: Fully responsive design with dark mode aesthetics.
 - **Cloud Storage**: seamless integration with **ImageKit** for reliable file storage.
 
-## 🛠️ Technologies Used
+## 📁 File Sharing via Public Links
+
+Droply allows users to securely share files using public, token-based share links, similar to modern cloud storage platforms.
+
+### ✨ How it works
+
+- Users can generate a shareable link for any uploaded file
+- Each link contains a unique token stored in the database
+- The shared file can be accessed without login
+- The backend validates the token and securely redirects to the file
+
+### 🔐 Why token-based sharing?
+
+- Prevents exposing raw cloud storage URLs
+- Allows future control like:
+  - Link expiration
+  - Access revocation
+  - View tracking
+- Keeps file ownership and access logic server-controlled
+
+![File Sharing Demo](./frontend/public/share.png)
+
+## �🛠️ Technologies Used
 
 ### Frontend
 - **React.js**: Library for building the user interface.
