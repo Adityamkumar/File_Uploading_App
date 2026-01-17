@@ -5,7 +5,7 @@ export const fileFilter = (req, file, cb) => {
   if (allowedMimeTypesRegex.test(file.mimetype)) {
     cb(null, true); // accept file
   } else {
-    const error = new Error("Only images (jpeg, png, webp, avif) and PDFs are allowed");
+    const error = new Error("Only images (jpeg, png, jpeg , webp, avif) and PDFs are allowed");
     error.isFileTypeError = true;
     cb(error)
   }
