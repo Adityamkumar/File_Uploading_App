@@ -17,14 +17,7 @@ export const fileUpload = async (req, res) => {
     const ext = path.extname(file.originalname);
     const uniqueFileName = `${uuidv4()}${ext}`;
 
-    const uploadedFile = await uploadFile(
-      fs.createReadStream(file.path),
-      uniqueFileName
-    );
-
-    if (file?.path) {
-      fs.unlinkSync(file.path);
-    }
+    const uploadedFile = await uploadFile(file.buffer, uniqueFileName);
 
     const savedFile = await fileModel.create({
       user: req.user._id,
