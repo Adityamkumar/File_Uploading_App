@@ -6,7 +6,6 @@ const api = axios.create({
     : "",                            
   withCredentials: true
 });
-console.log("PROD:", import.meta.env.PROD);
-console.log("API URL:", import.meta.env.VITE_API_URL);
+
 
 export default api;
