@@ -1,13 +1,12 @@
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import FileUploadBox from "../FileUploadBox";
+import FileUploadBox from "@/components/FileUploadBox";
 import { ArrowDownToLine, Share2, Trash2 } from "lucide-react";
-import { formatFileSize } from "../../utils/utils";
-import DeleteConfirmModel from "../DeleteConfirmModel";
-import { formatTimeAgo } from "../../utils/time.js";
-import  ShareModel  from "../ShareModel.jsx"
-import { API_BASE_URL } from "../../config/api.js";
+import { formatFileSize } from "@/utils/utils";
+import DeleteConfirmModel from "@/components/DeleteConfirmModel";
+import { formatTimeAgo } from "@/utils/time.js";
+import  ShareModel  from "@/components/ShareModel.jsx"
 
 export default function Dashboard() {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -35,7 +34,7 @@ export default function Dashboard() {
     const fetchCurrentUser = async () => {
       try {
         const response = await axios.get(
-          `${API_BASE_URL}/api/auth/user/me`,
+          `/api/auth/user/me`,
           { withCredentials: true }
         );
         setUserEmail(response.data.user.email);
@@ -51,7 +50,7 @@ export default function Dashboard() {
   // 🚪 Logout
   const logoutUser = async () => {
     try {
-      await axios.get(`${API_BASE_URL}/api/auth/user/logout`, {
+      await axios.get(`/api/auth/user/logout`, {
         withCredentials: true,
       });
       navigate("/");
@@ -92,7 +91,7 @@ export default function Dashboard() {
       setErrorMessage("");
       setUploadProgress(0);
 
-      await axios.post(`${API_BASE_URL}/api/files/upload`, formData, {
+      await axios.post(`/api/files/upload`, formData, {
         withCredentials: true,
         signal: abortControllerRef.current.signal,
         onUploadProgress: (progressEvent) => {
@@ -128,7 +127,7 @@ export default function Dashboard() {
   // 📄 Fetch files
   const fetchFiles = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/api/files`, {
+      const response = await axios.get(`/api/files`, {
         withCredentials: true,
       });
       setFiles(response.data.files);
@@ -146,7 +145,7 @@ export default function Dashboard() {
     try {
       setDeleting(true);
 
-      await axios.delete(`${API_BASE_URL}/api/files/${id}`, {
+      await axios.delete(`/api/files/${id}`, {
         withCredentials: true,
       });
       setShowDeleteModal(false);
@@ -192,7 +191,7 @@ export default function Dashboard() {
 
   const handleShare = async (fileId) => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/api/files/${fileId}/share`, {}, {
+      const response = await axios.post(`/api/files/${fileId}/share`, {}, {
         withCredentials: true
       })
       setShareLink(response.data.shareUrl)

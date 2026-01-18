@@ -1,5 +1,5 @@
 import React from "react";
-import DotGrid from "../DotGrid";
+import DotGrid from "@/components/DotGrid";
 import { Github } from "lucide-react";
 import { ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";

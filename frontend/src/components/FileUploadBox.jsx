@@ -1,4 +1,4 @@
-import { formatFileSize } from "../utils/utils";
+import { formatFileSize } from "@/utils/utils";
 
 export default function FileUploadBox({
   onFileChange,
