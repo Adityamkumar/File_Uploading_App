@@ -1,3 +1,4 @@
+ import apminsight from 'apminsight';
  import app from './src/app.js';
  import { configDotenv } from 'dotenv'
 import db from './src/db/db.js';

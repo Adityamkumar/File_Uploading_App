@@ -35,7 +35,7 @@ app.options(/.*/, cors());
 
 
 app.get('/', (req, res)=>{
-    res.send("Hello Server")
+    setTimeout(()=>(res.send("Hello Server")), 4000)
 })
 
 //Auth Route
