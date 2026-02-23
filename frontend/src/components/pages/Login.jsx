@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { Cloud, ArrowRight, Mail, Lock, Loader2 } from "lucide-react";
+import DotGrid from "@/components/DotGrid";
 import api from "@/api";
 
 export default function Login() {
@@ -12,23 +14,11 @@ export default function Login() {
 
   const handelLoginSubmit = async (e) => {
     e.preventDefault();
-
     try {
       setLoading(true)
-      await api.post(
-        `/api/auth/user/login`,
-        {
-          email,
-          password,
-        },
-        {
-          withCredentials: true,
-        }
-      );
-
+      await api.post(`/api/auth/user/login`, { email, password }, { withCredentials: true });
       setEmail("");
       setPassword("");
-
       navigate("/dashboard");
     } catch (error) {
       const message = error.response?.data?.message || "Something went wrong";
@@ -39,76 +29,93 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-zinc-900 px-4">
-      <div className="w-full max-w-md rounded-2xl border border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-8 shadow-sm">
-        <h2 className="text-3xl font-semibold text-gray-900 dark:text-gray-100">
-          Welcome back
-        </h2>
-        <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-          Login to access your files
-        </p>
+    <div className="min-h-screen w-full flex items-center justify-center bg-zinc-950 text-zinc-100 relative overflow-hidden px-4 selection:bg-blue-500/30">
+      <div className="fixed inset-0 z-0 pointer-events-none opacity-50">
+        <DotGrid 
+            dotSize={2} 
+            gap={40} 
+            baseColor="rgba(255,255,255,0.05)" 
+            activeColor="rgba(59,130,246,0.3)" 
+        />
+      </div>
 
-        <form onSubmit={handelLoginSubmit} className="mt-6 space-y-5">
-          <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-            >
-              Email
-            </label>
-            <input
-              required
-              id="email"
-              type="email"
-              placeholder="you@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="mt-1 w-full rounded-lg border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-4 py-2.5 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+      {/* Dynamic Glows */}
+      <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-600/10 blur-[120px] rounded-full pointer-events-none z-0" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-purple-600/10 blur-[120px] rounded-full pointer-events-none z-0" />
+
+      <div className="w-full max-w-md relative z-10 animate-in fade-in zoom-in-95 duration-700">
+        <div className="glass rounded-[2rem] border border-white/10 p-10 shadow-2xl overflow-hidden relative">
+          
+          <div className="flex flex-col items-center mb-8">
+            <div className="w-16 h-16 bg-blue-600/20 rounded-2xl flex items-center justify-center mb-4 group hover:scale-110 transition-transform duration-500">
+              <Cloud className="w-8 h-8 text-blue-500" />
+            </div>
+            <h1 className="text-3xl font-bold tracking-tight text-white mb-2">Welcome Back</h1>
+            <p className="text-zinc-400 text-center">Enter your details to access your secure storage.</p>
           </div>
 
-          <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+          <form onSubmit={handelLoginSubmit} className="space-y-6">
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-zinc-400 ml-1">Email Address</label>
+              <div className="relative group">
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500 group-focus-within:text-blue-500 transition-colors" />
+                <input
+                  required
+                  type="email"
+                  placeholder="name@company.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full pl-12 pr-4 py-3.5 bg-white/5 border border-white/10 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all text-white placeholder:text-zinc-600"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-zinc-400 ml-1">Password</label>
+              <div className="relative group">
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500 group-focus-within:text-blue-500 transition-colors" />
+                <input
+                  required
+                  type="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full pl-12 pr-4 py-3.5 bg-white/5 border border-white/10 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all text-white placeholder:text-zinc-600"
+                />
+              </div>
+            </div>
+
+            {errorMessage && (
+              <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-400 text-sm animate-in shake duration-300">
+                {errorMessage}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full btn-gradient flex items-center justify-center gap-2 group disabled:opacity-70 cursor-pointer"
             >
-              Password
-            </label>
-            <input
-              required
-              id="password"
-              type="password"
-              placeholder="••••••••"
-              autoComplete="true"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 w-full rounded-lg border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-4 py-2.5 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+              {loading ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : (
+                <>
+                  <span>Sign In</span>
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </>
+              )}
+            </button>
+          </form>
+
+          <div className="mt-8 text-center border-t border-white/5 pt-8">
+            <p className="text-zinc-400">
+              Don't have an account?{" "}
+              <Link to="/register" className="text-blue-500 font-bold hover:text-blue-400 transition-colors">
+                Create account
+              </Link>
+            </p>
           </div>
-
-          <button
-            type="submit"
-            className={`w-full cursor-pointer rounded-lg ${loading
-              ? "bg-blue-400 cursor-not-allowed"
-              : "bg-blue-600 hover:bg-blue-700 cursor-pointer"
-              } py-2.5 font-medium text-white transition`}
-          >
-            {loading ? "Logging in..." : "Login"}
-          </button>
-          {errorMessage && (
-            <p className="text-red-500 font-sm text-center">{errorMessage}</p>
-          )}
-        </form>
-
-        <p className="mt-6 text-sm text-gray-600 dark:text-gray-400">
-          Don’t have an account?{" "}
-          <Link
-            to="/register"
-            className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-          >
-            Register
-          </Link>
-        </p>
+        </div>
       </div>
     </div>
   );

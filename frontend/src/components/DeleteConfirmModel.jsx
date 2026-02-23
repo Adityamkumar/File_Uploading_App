@@ -1,4 +1,5 @@
 import React from "react";
+import { AlertCircle, Trash2, X } from "lucide-react";
 
 const DeleteConfirmModel = ({
   showDeleteModal,
@@ -7,47 +8,62 @@ const DeleteConfirmModel = ({
   handleCancelDelete,
   handleDelete,
 }) => {
+  if (!showDeleteModal) return null;
+
   return (
-    showDeleteModal && (
-      <div className="fixed px-4 inset-0 z-50 flex items-center justify-center bg-black/50">
-        <div className="w-full max-w-sm rounded-lg bg-white dark:bg-zinc-900 p-6">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-            Delete file?
-          </h2>
+    <div className="fixed inset-0 z-[110] flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
+      <div className="relative w-full max-w-md glass rounded-[2rem] border border-white/10 p-8 shadow-2xl animate-in zoom-in-95 duration-300">
+        <button
+          onClick={handleCancelDelete}
+          className="absolute top-6 right-6 p-2 rounded-xl text-zinc-500 hover:text-white hover:bg-white/5 transition-all cursor-pointer"
+        >
+          <X className="w-5 h-5" />
+        </button>
 
-          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-            Are you sure you want to delete{" "}
-            <span className="font-medium">{fileToDelete?.originalName}</span>?
-            This action cannot be undone.
-          </p>
+        <div className="flex flex-col items-center text-center">
+            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-red-500/10 text-red-500 mb-6">
+                <AlertCircle className="w-8 h-8" />
+            </div>
+            
+            <h2 className="text-2xl font-bold text-white tracking-tight mb-3">
+               Delete File?
+            </h2>
 
-          <div className="mt-6 flex justify-end gap-3">
-            <button
-              onClick={handleCancelDelete}
-              disabled={deleting}
-              className="rounded-lg cursor-pointer px-4 py-2 text-sm bg-gray-200 dark:bg-zinc-800 text-gray-700 dark:text-gray-300 disabled:opacity-50"
-            >
-              Cancel
-            </button>
+            <p className="text-zinc-400 leading-relaxed mb-8">
+                Are you sure you want to delete <span className="text-white font-semibold">"{fileToDelete?.originalName}"</span>? 
+                This action is permanent and cannot be undone.
+            </p>
 
-            <button
-              onClick={() => handleDelete(fileToDelete)}
-              disabled={deleting}
-              className="flex items-center justify-center rounded-lg cursor-pointer px-4 py-2 text-sm bg-red-600 text-white disabled:opacity-60"
-            >
-              {deleting ? (
-                <>
-                  <span className="absolute h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                  <span className="opacity-0">Delete</span>
-                </>
-              ) : (
-                "Delete"
-              )}
-            </button>
-          </div>
+            <div className="flex items-center gap-3 w-full">
+                <button
+                    onClick={handleCancelDelete}
+                    disabled={deleting}
+                    className="flex-1 px-6 py-3 rounded-xl font-semibold text-zinc-400 hover:text-white hover:bg-white/5 transition-all cursor-pointer disabled:opacity-50"
+                >
+                    Cancel
+                </button>
+
+                <button
+                    onClick={() => handleDelete(fileToDelete)}
+                    disabled={deleting}
+                    className="flex-1 bg-red-600 hover:bg-red-500 text-white font-semibold px-6 py-3 rounded-xl shadow-lg shadow-red-600/20 active:scale-95 transition-all cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
+                >
+                    {deleting ? (
+                        <>
+                            <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                            <span>Deleting</span>
+                        </>
+                    ) : (
+                        <>
+                            <Trash2 className="w-4 h-4" />
+                            <span>Delete</span>
+                        </>
+                    )}
+                </button>
+            </div>
         </div>
       </div>
-    )
+    </div>
   );
 };
 
