@@ -80,7 +80,10 @@ export default function Dashboard() {
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    if (file) setSelectedFile(file);
+    if (file) {
+      setSelectedFile(file);
+      setErrorMessage("");
+    }
   };
 
   const resetUploadState = () => {
@@ -612,7 +615,7 @@ export default function Dashboard() {
                 onFileChange={handleFileChange}
                 uploadProgress={uploadProgress}
                 handleCancel={handleCancel}
-                onUpload={handleUpload}
+                onUpload={() => handleUpload()}
                 onClose={() => setShowUploadModal(false)}
               />
             </div>
