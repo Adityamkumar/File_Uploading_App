@@ -2,65 +2,66 @@
 
 Droply is a modern, secure, and efficient file-sharing application designed to make storing and sharing files seamless. Built with a robust technology stack, it offers a user-friendly interface for managing your files with ease.
 
-![Droply Demo Image](/frontend/public/demo.png)
+## 🖥️ Dashboard Overview
 
-## 🚀 Features
+The Droply dashboard provides a comprehensive view of your storage at a glance. It features real-time statistics and a clean, glassmorphic file management system.
 
-- **User Authentication**: Secure Sign Up, Login, and Logout functionality using JWT.
-- **File Upload**: Drag-and-drop or click-to-upload support with real-time progress bars.
-- **Dashboard**: A clean, responsive dashboard to view and manage your uploaded files.
-- **File Management**:
-  - View file details (name, size, upload time).
-  - Download files directly.
-  - Delete files with a confirmation modal.
-- **Dark Mode Support**: Fully responsive design with dark mode aesthetics.
-- **Cloud Storage**: seamless integration with **ImageKit** for reliable file storage.
+![Dashboard Preview](frontend/public/dashboard.png)
+
+## 🚀 Key Features
+
+### 📊 Real-time Statistics
+- **Total Files**: Instantly see the count of files in your vault.
+- **Storage Tracking**: View used vs. available storage in MB with visual progress bars.
+- **Account Status**: Monitor your current account tier and health.
+
+### 📤 Seamless File Management
+- **Smart Upload**: Support for drag-and-drop and manual file selection with real-time progress.
+- **Advanced Filtering**: Quickly group files by type (Images, PDFs, Documents, and more).
+- **Instant Search**: Find any file in seconds using the dynamic search bar.
+- **Secure Preview**: View file details and previews before downloading or sharing.
+
+### 🔒 Enhanced Security & UX
+- **JWT Authentication**: Secure user sessions with protected routes.
+- **Public Sharing**: Generate secure, token-based public links for any file.
+- **Dark Mode Aesthetic**: A premium, high-contrast dark theme designed for modern workflows.
+- **Responsive Layout**: Fully optimized for desktop and mobile devices.
+- **Cloud Powered**: Leveraging **ImageKit** for reliable, high-speed file storage and delivery.
 
 ## 📁 File Sharing via Public Links
 
 Droply allows users to securely share files using public, token-based share links, similar to modern cloud storage platforms.
 
 ### ✨ How it works
-
-- Users can generate a shareable link for any uploaded file
-- Each link contains a unique token stored in the database
-- The shared file can be accessed without login
-- The backend validates the token and securely redirects to the file
+- **Share Link Generation**: Generate a unique, shareable link for any file instantly.
+- **Token Validation**: Each link uses a secure, database-verified token.
+- **Direct Access**: Shared files can be accessed via a clean public interface without requiring login.
+- **Secure Redirection**: The backend validates the token and provides a temporary, secure access path.
 
 ### 🔐 Why token-based sharing?
+- **Privacy**: Prevents exposing internal cloud storage URLs to the public.
+- **Control**: Enables link revocation, expiration, and access tracking.
+- **Logic**: Keeps all ownership and access business logic server-controlled.
 
-- Prevents exposing raw cloud storage URLs
-- Allows future control like:
-  - Link expiration
-  - Access revocation
-  - View tracking
-- Keeps file ownership and access logic server-controlled
-
-![File Sharing Demo](./frontend/public/share.png)
+![File Sharing Demo](frontend/public/share.png)
 
 ## ⚠️ Limitation
+- **Storage Limit**: Due to cloud storage plan limits, uploads are currently restricted to **10MB** per file. 
+- **Scalability**: This architecture is ready to scale by upgrading storage providers or plans.
 
-Due to cloud storage plan limits, file uploads are currently restricted to **10MB**.
-This can be scaled later by switching to a different storage provider or paid plan.
+## 🛠️ Technology Stack
 
-## �🛠️ Technologies Used
-
-### Frontend
-- **React.js**: Library for building the user interface.
-- **Vite**: Fast build tool and development server.
-- **Tailwind CSS**: Utility-first CSS framework for styling.
-- **Axios**: For making HTTP requests to the backend.
-- **Lucide React**: For beautiful and consistent icons.
-- **React Router DOM**: For client-side routing.
+### Frontend Core
+- **React.js & Vite**: Modern reactive UI with lightning-fast builds.
+- **Tailwind CSS**: Contemporary utility-first styling for a custom aesthetic.
+- **Lucide React**: Crisp, modern icon set.
 - **GSAP & Three.js**: Implemented for advanced animations and visual effects.
 
-### Backend
-- **Node.js & Express.js**: Runtime environment and framework for the API.
-- **MongoDB & Mongoose**: NoSQL database for storing user and file metadata.
-- **ImageKit**: Cloud storage service for handling file uploads.
-- **Multer**: Middleware for handling `multipart/form-data`.
-- **JWT (JSON Web Tokens)**: For secure authentication.
-- **Bcrypt**: For password hashing.
+### Backend & Storage
+- **Node.js & Express**: High-performance backend runtime and framework.
+- **MongoDB & Mongoose**: Flexible document storage for metadata.
+- **ImageKit**: Distributed cloud storage for global file delivery.
+- **JWT & Bcrypt**: Industry-standard security for auth and sensitive data.
 
 ## ⚙️ Installation & Setup
 

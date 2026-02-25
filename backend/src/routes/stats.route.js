@@ -4,6 +4,6 @@ import { getUserStorageStats } from '../controllers/stats.controller.js'
 const router = express.Router()
 
 
-router.get('/storage', authMiddleware, getUserStorageStats)
+router.get('/stats/storage', authMiddleware, getUserStorageStats)
 
 export default router
