@@ -1,3 +1,5 @@
+import api from "../api.js";
+
 export const getStorageStats = async () => {
     try {
         const response = await api.get("/api/stats/storage");
