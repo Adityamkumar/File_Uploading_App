@@ -2,6 +2,12 @@
 
 Droply is a modern, secure, and efficient file-sharing application designed to make storing and sharing files seamless. Built with a robust technology stack, it offers a user-friendly interface for managing your files with ease.
 
+## 🌐 Landing Page Preview
+
+Experience the sleek, interactive entry point of Droply. Featuring an advanced particle background system and a modern, immersive design to welcome users.
+
+![Landing Page Preview](frontend/public/landing.png)
+
 ## 🖥️ Dashboard Overview
 
 The Droply dashboard provides a comprehensive view of your storage at a glance. It features real-time statistics and a clean, glassmorphic file management system.
@@ -43,7 +49,6 @@ Droply allows users to securely share files using public, token-based share link
 - **Control**: Enables link revocation, expiration, and access tracking.
 - **Logic**: Keeps all ownership and access business logic server-controlled.
 
-![File Sharing Demo](frontend/public/share.png)
 
 ## ⚠️ Limitation
 - **Storage Limit**: Due to cloud storage plan limits, uploads are currently restricted to **10MB** per file. 
