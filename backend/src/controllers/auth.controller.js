@@ -130,3 +130,4 @@ export const getCurrentUser = (req, res) => {
     },
   });
 };
+
