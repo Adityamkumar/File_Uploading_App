@@ -1,6 +1,22 @@
 import userModel from "../models/user.model.js";
-import bcrypt from "bcrypt";
+import { options as cookieOptions } from "../config/cookie.config.js";
 import jwt from "jsonwebtoken";
+
+const generateAccessTokenAndRefreshToken = async (userId) => {
+  try {
+    const user = await userModel.findById(userId);
+    const accessToken = user.generateAccessToken();
+    const refreshToken = user.generateRefreshToken();
+
+    user.refreshToken = refreshToken;
+
+    await user.save({ validateBeforeSave: false });
+
+    return { accessToken, refreshToken };
+  } catch (error) {
+    console.log("Errror while generating Access and Refresh Token! ", error);
+  }
+};
 
 export const userRegister = async (req, res) => {
   try {
@@ -23,29 +39,16 @@ export const userRegister = async (req, res) => {
       });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-
     const user = await userModel.create({
       email: email,
-      password: hashedPassword,
+      password: password,
     });
 
-    const token = await jwt.sign(
-      {
-        id: user._id,
-      },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: "7d",
-      }
-    );
+    const { accessToken, refreshToken } =
+      await generateAccessTokenAndRefreshToken(user._id);
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "none",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
+    res.cookie("accessToken", accessToken, cookieOptions);
+    res.cookie("refreshToken", refreshToken, cookieOptions);
 
     res.status(201).json({
       message: "User register successfully",
@@ -70,7 +73,7 @@ export const userLogin = async (req, res) => {
         message: "Invalid email or password!",
       });
     }
-    const isPasswordMatched = await bcrypt.compare(password, user.password);
+    const isPasswordMatched = await user.isPasswordCorrect(password);
 
     if (!isPasswordMatched) {
       return res.status(400).json({
@@ -78,28 +81,22 @@ export const userLogin = async (req, res) => {
       });
     }
 
-    const token = await jwt.sign(
-      {
-        id: user._id,
-      },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: "7d",
-      }
-    );
+    const { accessToken, refreshToken } =
+      await generateAccessTokenAndRefreshToken(user._id);
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "none",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
+    const loggedInUser = await userModel
+      .findById(user._id)
+      .select("-password -refreshToken");
+
+    res.cookie("accessToken", accessToken, cookieOptions);
+    res.cookie("refreshToken", refreshToken, cookieOptions);
 
     res.status(200).json({
       message: "User Logged In successfully",
       user: {
-        id: user._id,
-        email: user.email,
+        user: loggedInUser,
+        accessToken,
+        refreshToken,
       },
     });
   } catch (error) {
@@ -109,16 +106,74 @@ export const userLogin = async (req, res) => {
   }
 };
 
-export const userLogout = async (req, res) => {
-  res.clearCookie("token", {
-    httpOnly: true,
-    secure: true,
-    sameSite: "None",
-  });
+export const refreshAccessToken = async (req, res) => {
+  const incomingRefreshToken =
+    req.cookies.refreshToken || req.body.refreshToken;
 
-  return res.status(200).json({
-     message: "user Logged out successfully"
-  })
+  if (!incomingRefreshToken) {
+    return res.status(401).json({
+      message: "Unauthorized request",
+    });
+  }
+
+  try {
+    const decodedToken = jwt.verify(
+      incomingRefreshToken,
+      process.env.REFRESH_TOKEN_SECRET,
+    );
+
+    const user = await userModel.findById(decodedToken?._id);
+
+    if (!user) {
+      return res.status(401).json({
+        message: "Invalid refreshToken",
+      });
+    }
+
+    if (incomingRefreshToken !== user?.refreshToken) {
+      return res
+        .status(401)
+        .json({ message: "Refresh token is used or expired" });
+    }
+
+    const { accessToken, refreshToken } =
+      await generateAccessTokenAndRefreshToken(user._id);
+
+    res.cookie("accessToken", accessToken, cookieOptions);
+    res.cookie("refreshToken", refreshToken, cookieOptions);
+
+    return res.status(200).json({
+      accessToken,
+      refreshToken: refreshToken,
+      message: "access token refreshed",
+    });
+  } catch (error) {
+    return res.status(401).json({
+      message: "Invalid refresh token",
+    });
+  }
+};
+
+export const userLogout = async (req, res) => {
+  await userModel.findByIdAndUpdate(
+    req.user?._id,
+    {
+      $unset: {
+        refreshToken: 1,
+      },
+    },
+    {
+      new: true,
+    },
+  );
+
+  res
+    .status(200)
+    .clearCookie("accessToken", cookieOptions)
+    .clearCookie("refreshToken", cookieOptions)
+    .json({
+       message: "user logged out successfully"
+    })
 };
 
 export const getCurrentUser = (req, res) => {
@@ -130,4 +185,3 @@ export const getCurrentUser = (req, res) => {
     },
   });
 };
-
