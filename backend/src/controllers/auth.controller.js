@@ -1,5 +1,5 @@
 import userModel from "../models/user.model.js";
-import { options as cookieOptions } from "../config/cookie.config.js";
+import { refreshCookieOptions, accessCookieOptions } from "../config/cookie.config.js";
 import jwt from "jsonwebtoken";
 
 const generateAccessTokenAndRefreshToken = async (userId) => {
@@ -47,8 +47,8 @@ export const userRegister = async (req, res) => {
     const { accessToken, refreshToken } =
       await generateAccessTokenAndRefreshToken(user._id);
 
-    res.cookie("accessToken", accessToken, cookieOptions);
-    res.cookie("refreshToken", refreshToken, cookieOptions);
+    res.cookie("accessToken", accessToken, accessCookieOptions);
+    res.cookie("refreshToken", refreshToken, refreshCookieOptions);
 
     res.status(201).json({
       message: "User register successfully",
@@ -88,8 +88,8 @@ export const userLogin = async (req, res) => {
       .findById(user._id)
       .select("-password -refreshToken");
 
-    res.cookie("accessToken", accessToken, cookieOptions);
-    res.cookie("refreshToken", refreshToken, cookieOptions);
+    res.cookie("accessToken", accessToken, accessCookieOptions);
+    res.cookie("refreshToken", refreshToken, refreshCookieOptions);
 
     res.status(200).json({
       message: "User Logged In successfully",
@@ -139,8 +139,8 @@ export const refreshAccessToken = async (req, res) => {
     const { accessToken, refreshToken } =
       await generateAccessTokenAndRefreshToken(user._id);
 
-    res.cookie("accessToken", accessToken, cookieOptions);
-    res.cookie("refreshToken", refreshToken, cookieOptions);
+    res.cookie("accessToken", accessToken, accessCookieOptions);
+    res.cookie("refreshToken", refreshToken, refreshCookieOptions);
 
     return res.status(200).json({
       accessToken,
@@ -169,8 +169,8 @@ export const userLogout = async (req, res) => {
 
   res
     .status(200)
-    .clearCookie("accessToken", cookieOptions)
-    .clearCookie("refreshToken", cookieOptions)
+    .clearCookie("accessToken", accessCookieOptions)
+    .clearCookie("refreshToken", refreshCookieOptions)
     .json({
        message: "user logged out successfully"
     })
