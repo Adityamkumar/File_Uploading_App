@@ -16,19 +16,24 @@ The Droply dashboard provides a comprehensive view of your storage at a glance. 
 
 ## 🚀 Key Features
 
-### 📊 Real-time Statistics
-- **Total Files**: Instantly see the count of files in your vault.
-- **Storage Tracking**: View used vs. available storage in MB with visual progress bars.
-- **Account Status**: Monitor your current account tier and health.
+### 📊 Real-time Statistics & Dashboard
+- **Total Files**: Instantly see the count of files in your vault with real-time updates.
+- **Storage Tracking**: View used vs. available storage in MB with visual progress bars and analytics.
+- **Account Status**: Monitor your current account tier, storage health, and file distribution.
+- **Interactive Dashboard**: Comprehensive file management interface with advanced controls.
 
 ### 📤 Seamless File Management
-- **Smart Upload**: Support for drag-and-drop and manual file selection with real-time progress.
-- **Advanced Filtering**: Quickly group files by type (Images, PDFs, Documents, and more).
-- **Instant Search**: Find any file in seconds using the dynamic search bar.
+- **Smart Upload**: Support for drag-and-drop and manual file selection with real-time progress tracking.
+- **Advanced Filtering & Sorting**: Quickly group and sort files by type (Images, PDFs, Documents, and more).
+- **Batch Operations**: Select multiple files for bulk actions including delete and share operations.
+- **Instant Search**: Find any file in seconds using the dynamic search bar with real-time filtering.
 - **Secure Preview**: View file details and previews before downloading or sharing.
+- **Responsive Controls**: Easy-to-use interface for managing files on desktop and mobile devices.
 
 ### 🔒 Enhanced Security & UX
-- **JWT Authentication**: Secure user sessions with protected routes.
+- **JWT Authentication**: Secure user sessions with protected routes and token rotation.
+- **Access & Refresh Token Rotation**: Automatic token refresh mechanism for enhanced security with separate expiry times (1 day for access, 7 days for refresh).
+- **Secure Logout**: Token invalidation on logout with proper session management.
 - **Public Sharing**: Generate secure, token-based public links for any file.
 - **Dark Mode Aesthetic**: A premium, high-contrast dark theme designed for modern workflows.
 - **Responsive Layout**: Fully optimized for desktop and mobile devices.
@@ -48,6 +53,42 @@ Droply allows users to securely share files using public, token-based share link
 - **Privacy**: Prevents exposing internal cloud storage URLs to the public.
 - **Control**: Enables link revocation, expiration, and access tracking.
 - **Logic**: Keeps all ownership and access business logic server-controlled.
+
+## 🔐 Authentication & Authorization System
+
+Droply implements a robust JWT-based authentication system with enhanced security measures:
+
+### ✨ Token Rotation Mechanism
+- **Access Token**: Short-lived token (1 day expiry) used for API requests
+- **Refresh Token**: Long-lived token (7 days expiry) stored securely in HTTP-only cookies
+- **Automatic Rotation**: Access tokens are automatically refreshed without requiring re-login
+- **Secure Token Refresh Endpoint**: `/api/auth/refresh-token` validates refresh tokens server-side
+
+### 🛡️ Security Features
+- **HTTP-Only Cookies**: Both access and refresh tokens stored as HTTP-only, secure cookies to prevent XSS attacks
+- **CORS Protection**: Credentials are only sent to whitelisted origins
+- **Secure Flag**: Cookies sent only over HTTPS in production environments
+- **SameSite Protection**: CSRF protection with SameSite cookie attributes
+- **Bcrypt Password Hashing**: User passwords encrypted with Bcrypt before storage
+- **Session Management**: Secure logout invalidates tokens server-side
+
+### 📋 Authentication Endpoints
+- `POST /api/auth/user/register` - Register new user
+- `POST /api/auth/user/login` - User login with token generation
+- `POST /api/auth/refresh-token` - Refresh access token
+- `GET /api/auth/user/me` - Get current user info (protected)
+- `GET /api/auth/user/logout` - Logout and invalidate tokens (protected)
+
+## 📊 Storage Statistics & Dashboard
+
+### New Storage Insights
+- **Real-time Storage Analytics**: View comprehensive storage usage statistics via `/api/stats/storage` endpoint
+- **Dashboard Metrics**: 
+  - Total files count by user
+  - Total storage used (in MB)
+  - Available storage remaining
+  - Visual progress indicators for storage capacity
+- **MongoDB Aggregation**: Efficient server-side aggregation for quick stats generation
 
 
 ## ⚠️ Limitation
@@ -96,9 +137,12 @@ PORT=3000
 MONGODB_URI=your_mongodb_connection_string
 CORS_ORIGIN=http://localhost:5173
 JWT_SECRET=your_jwt_secret
+ACCESS_TOKEN_SECRET=your_access_token_secret
+REFRESH_TOKEN_SECRET=your_refresh_token_secret
 IMAGEKIT_PUBLIC_KEY=your_imagekit_public_key
 IMAGEKIT_PRIVATE_KEY=your_imagekit_private_key
 IMAGEKIT_URL_ENDPOINT=your_imagekit_url_endpoint
+NODE_ENV=development
 ```
 
 Start the backend server:
